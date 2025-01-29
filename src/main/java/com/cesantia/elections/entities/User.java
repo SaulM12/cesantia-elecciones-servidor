@@ -1,6 +1,8 @@
-package com.souldevec.security.entities;
+package com.cesantia.elections.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,19 +21,22 @@ public class User {
     private String id;
 
     @NotBlank
-    @Column(unique = true, nullable = false)
-    private String userName;
+    @Column(unique = true, nullable = false, length = 10)
+    private String ci;
 
     @NotBlank
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    public User(String userName, String password, Role role) {
-        this.userName = userName;
+    @Column
+    private Boolean active = true;
+    public User(String ci, String password, Role role) {
+        this.ci = ci;
         this.password = password;
         this.role = role;
     }

@@ -1,6 +1,6 @@
-package com.souldevec.security.entities;
+package com.cesantia.elections.entities;
 
-import com.souldevec.security.enums.RoleList;
+import com.cesantia.elections.enums.RoleList;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

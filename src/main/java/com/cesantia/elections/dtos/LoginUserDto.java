@@ -1,4 +1,4 @@
-package com.souldevec.security.dtos;
+package com.cesantia.elections.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

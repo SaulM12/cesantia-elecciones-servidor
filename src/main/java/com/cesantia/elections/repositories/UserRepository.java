@@ -1,6 +1,6 @@
-package com.souldevec.security.repositories;
+package com.cesantia.elections.repositories;
 
-import com.souldevec.security.entities.User;
+import com.cesantia.elections.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,6 +8,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
-    Optional<User> findByUserName(String userName);
-    boolean existsByUserName(String userName);
+    Optional<User> findByCi(String ci);
+    boolean existsByCi(String ci);
 }

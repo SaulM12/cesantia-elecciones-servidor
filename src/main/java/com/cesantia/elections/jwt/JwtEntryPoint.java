@@ -1,4 +1,4 @@
-package com.souldevec.security.jwt;
+package com.cesantia.elections.jwt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

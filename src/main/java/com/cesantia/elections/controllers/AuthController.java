@@ -1,8 +1,13 @@
-package com.souldevec.security.controllers;
+package com.cesantia.elections.controllers;
 
-import com.souldevec.security.dtos.LoginUserDto;
-import com.souldevec.security.dtos.NewUserDto;
-import com.souldevec.security.services.AuthService;
+import com.cesantia.elections.dtos.ApiMessage;
+import com.cesantia.elections.dtos.LoginUserDto;
+import com.cesantia.elections.dtos.NewUserDto;
+import com.cesantia.elections.entities.User;
+import com.cesantia.elections.services.AuthService;
+import com.cesantia.elections.services.CookieService;
+import com.cesantia.elections.services.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,44 +17,56 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthService authService;
+    @Autowired
+    private AuthService authService;
 
     @Autowired
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
+    private UserService userService;
+
+    @Autowired
+    private CookieService cookieService;
+
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginUserDto loginUserDto, BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            return ResponseEntity.badRequest().body("Revise sus credenciales");
+    public ResponseEntity<ApiMessage> login(@Valid @RequestBody LoginUserDto loginUserDto, BindingResult bindingResult, HttpServletResponse response) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(new ApiMessage("Revise sus credenciales"));
         }
         try {
-            String jwt = authService.authenticate(loginUserDto.getUserName(), loginUserDto.getPassword());
-            return ResponseEntity.ok(jwt);
-        } catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            String roleName = authService.authenticate(loginUserDto.getUserName(), loginUserDto.getPassword(), response);
+            return ResponseEntity.ok(new ApiMessage(roleName));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiMessage("Revise sus credenciales"));
         }
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody NewUserDto newUserDto, BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            return ResponseEntity.badRequest().body("Revise los campos");
+    public ResponseEntity<ApiMessage> register(@Valid @RequestBody NewUserDto newUserDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(new ApiMessage("Revise sus credenciales"));
         }
         try {
             authService.registerUser(newUserDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Registrado");
-        } catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiMessage("Registrado"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ApiMessage(e.getMessage()));
         }
     }
 
-    @GetMapping("/check-auth")
-    public ResponseEntity<String> checkAuth(){
-            return ResponseEntity.ok().body("Autenticado");
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        // Usar el servicio de cookies para eliminar la cookie JWT
+        cookieService.deleteCookie("jwt", response);
+
+        return ResponseEntity.ok(new ApiMessage("Logout exitoso"));
+    }
+
+    @GetMapping("/details")
+    public ResponseEntity<User> getAuthenticatedUser() {
+        User userInfo = userService.getAuthenticatedUserInfo();
+        return ResponseEntity.ok(userInfo);
     }
 }

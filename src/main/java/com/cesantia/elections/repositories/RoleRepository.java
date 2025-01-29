@@ -1,7 +1,7 @@
-package com.souldevec.security.repositories;
+package com.cesantia.elections.repositories;
 
-import com.souldevec.security.entities.Role;
-import com.souldevec.security.enums.RoleList;
+import com.cesantia.elections.entities.Role;
+import com.cesantia.elections.enums.RoleList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

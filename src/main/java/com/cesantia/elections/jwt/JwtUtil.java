@@ -1,4 +1,4 @@
-package com.souldevec.security.jwt;
+package com.cesantia.elections.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,7 +27,7 @@ public class JwtUtil {
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         return Jwts.builder().setSubject(mainUser.getUsername())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + expiration * 1000L))
+                .setExpiration(new Date(new Date().getTime() + expiration * 100000L))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
