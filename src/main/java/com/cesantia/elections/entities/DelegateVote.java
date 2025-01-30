@@ -2,9 +2,7 @@ package com.cesantia.elections.entities;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +10,8 @@ import java.time.LocalDateTime;
 @Table(name = "delegate_vote",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"delegate_id", "period_id"})})
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DelegateVote {

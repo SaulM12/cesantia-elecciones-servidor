@@ -2,14 +2,14 @@ package com.cesantia.elections.dtos;
 
 import com.cesantia.elections.entities.Delegate;
 import com.cesantia.elections.enums.InvitationStatus;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Getter
+@Setter
 public class QuadrantDto {
     private Long id;
     private String description;
