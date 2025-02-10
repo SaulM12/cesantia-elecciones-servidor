@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +20,8 @@ public class DelegateVoteService {
 
     // Crear o actualizar un voto
     public DelegateVote saveDelegateVote(DelegateVote delegateVote) {
+        String voteControl = UUID.randomUUID().toString();
+        delegateVote.setVoteControl(voteControl);
         return delegateVoteRepository.save(delegateVote);
     }
 
@@ -47,20 +50,23 @@ public class DelegateVoteService {
      * @param quadrantId the ID of the quadrant
      * @return a list of candidates with their vote counts
      */
-    public List<DelegateVoteCountDto> getCandidatesWithVoteCountByQuadrantId(Long quadrantId) {
-        List<Object[]> results = delegateVoteRepository.findCandidatesWithVoteCountIncludingZeroByQuadrantId(quadrantId);
+    public List<DelegateVoteCountDto> getCandidatesWithVoteCountByQuadrantAndElectionType(Long quadrantId, Long electionTypeId) {
+        List<Object[]> results = delegateVoteRepository.findCandidatesWithVoteCountByQuadrantAndElectionType(quadrantId, electionTypeId);
 
         return results.stream()
                 .map(result -> new DelegateVoteCountDto(
-                        (Long) result[0], // id
-                        (String) result[1], // fullName
-                        (Long) result[3],
-                        (byte[]) result[2]
+                        (Long) result[0], // id del candidato
+                        (String) result[1], // nombre completo
+                        (Long) result[2] // cantidad de votos
                 ))
                 .collect(Collectors.toList());
     }
 
-    public Optional<DelegateVote> getVoteByDelegateCi(String ci) {
-        return delegateVoteRepository.findByDelegate_Ci(ci);
+    public Optional<DelegateVote> getVoteByDelegateCiAndElectionType(String ci, Long electionTypeId) {
+        return delegateVoteRepository.findByDelegate_CiAndElectionType_Id(ci,electionTypeId);
+    }
+
+    public void resetElectionInQuadrant(Long electionTypeId, Long quadrantId) {
+        delegateVoteRepository.deleteVotesByElectionTypeAndQuadrant(electionTypeId, quadrantId);
     }
 }

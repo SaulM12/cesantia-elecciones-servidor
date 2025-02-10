@@ -1,5 +1,6 @@
 package com.cesantia.elections.controllers;
 
+import com.cesantia.elections.dtos.ApiMessage;
 import com.cesantia.elections.dtos.ExecutiveDirectorVoteCountDto;
 import com.cesantia.elections.entities.Delegate;
 import com.cesantia.elections.entities.ExecutiveDirectorVote;
@@ -20,10 +21,10 @@ public class ExecutiveDirectorVoteController {
     @Autowired
     private ExecutiveDirectorVoteService voteService;
 
-    @PostMapping("/{nomineeId}/vote")
-    public ResponseEntity<Void> castVote(@PathVariable Long nomineeId, @RequestBody Delegate delegate) {
+    @PostMapping("/{nomineeId}/vote/{userIp}")
+    public ResponseEntity<Void> castVote(@PathVariable Long nomineeId,@PathVariable String userIp, @RequestBody Delegate delegate) {
         String voteControl = UUID.randomUUID().toString();
-        voteService.castVote(nomineeId, delegate, voteControl);
+        voteService.castVote(nomineeId, delegate, voteControl, userIp);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -40,5 +41,11 @@ public class ExecutiveDirectorVoteController {
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    @DeleteMapping("/reset")
+    public ResponseEntity<ApiMessage> resetExecutiveDirectorVotes() {
+        voteService.deleteAllExecutiveDirectorVotes();
+        return ResponseEntity.ok(new ApiMessage("Todos los votos de Executive Director han sido eliminados."));
     }
 }

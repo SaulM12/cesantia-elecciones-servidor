@@ -3,6 +3,7 @@ package com.cesantia.elections.repositories;
 import com.cesantia.elections.dtos.ExecutiveDirectorVoteCountDto;
 import com.cesantia.elections.entities.ExecutiveDirectorVote;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -17,4 +18,8 @@ public interface ExecutiveDirectorVoteRepository extends JpaRepository<Executive
     List<Object[]> countVotesByNominee();
 
     Optional<ExecutiveDirectorVote> findByDelegate_Ci(String ci);
+
+    @Modifying
+    @Query("DELETE FROM ExecutiveDirectorVote")
+    void deleteAllVotes();
 }

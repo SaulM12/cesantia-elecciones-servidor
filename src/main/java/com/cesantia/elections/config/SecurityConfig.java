@@ -28,7 +28,8 @@ public class SecurityConfig {
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/logout")
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/register", "/api/auth/login",
+                                "/api/auth/logout", "/api/delegate/import")
                         .permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
@@ -39,22 +40,22 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtTokenFilter(){
+    public JwtAuthenticationFilter jwtTokenFilter() {
         return new JwtAuthenticationFilter();
     }
 
     @Bean
-    public JwtEntryPoint jwtEntryPoint(){
+    public JwtEntryPoint jwtEntryPoint() {
         return new JwtEntryPoint();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource(){
+    CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of("http://localhost:4200"));

@@ -1,5 +1,6 @@
 package com.cesantia.elections.controllers;
 
+import com.cesantia.elections.dtos.ApiMessage;
 import com.cesantia.elections.dtos.DelegateVoteCountDto;
 import com.cesantia.elections.entities.DelegateVote;
 import com.cesantia.elections.services.DelegateVoteService;
@@ -55,16 +56,25 @@ public class DelegateVoteController {
      * @param quadrantId the ID of the quadrant
      * @return a list of candidates with their vote counts
      */
-    @GetMapping("/candidates-by-quadrant/{quadrantId}")
-    public ResponseEntity<List<DelegateVoteCountDto>> getCandidatesWithVoteCountByQuadrantId(
-            @PathVariable Long quadrantId) {
-        List<DelegateVoteCountDto> candidates = delegateVoteService.getCandidatesWithVoteCountByQuadrantId(quadrantId);
+    @GetMapping("/candidates")
+    public ResponseEntity<List<DelegateVoteCountDto>> getCandidatesWithVotes(
+            @RequestParam Long quadrantId,
+            @RequestParam Long electionTypeId) {
+        List<DelegateVoteCountDto> candidates = delegateVoteService.getCandidatesWithVoteCountByQuadrantAndElectionType(quadrantId, electionTypeId);
         return ResponseEntity.ok(candidates);
     }
-    @GetMapping("/by-delegate-ci/{ci}")
-    public ResponseEntity<DelegateVote> getVoteByDelegateCi(@PathVariable String ci) {
-        Optional<DelegateVote> vote = delegateVoteService.getVoteByDelegateCi(ci);
+    @GetMapping("/by-delegate-ci/{ci}/{electionTypeId}")
+    public ResponseEntity<DelegateVote> getVoteByDelegateCi(@PathVariable String ci, @PathVariable Long electionTypeId) {
+        Optional<DelegateVote> vote = delegateVoteService.getVoteByDelegateCiAndElectionType(ci,electionTypeId);
         return vote.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/reset-election/{electionTypeId}/quadrant/{quadrantId}")
+    public ResponseEntity<ApiMessage> resetElection(
+            @PathVariable Long electionTypeId,
+            @PathVariable Long quadrantId) {
+        delegateVoteService.resetElectionInQuadrant(electionTypeId, quadrantId);
+        return ResponseEntity.ok(new ApiMessage("Elección reiniciada correctamente en el cuadrante."));
     }
 
 }

@@ -28,12 +28,13 @@ public class ExecutiveDirectorVoteService {
     @Autowired
     private PeriodRepository periodRepository;
 
-    public void castVote(Long nomineeId, Delegate delegate, String voteControl) {
+    public void castVote(Long nomineeId, Delegate delegate, String voteControl, String userIp) {
         ExecutiveDirectorNominee nominee = nomineeRepository.findById(nomineeId)
                 .orElseThrow(() -> new RuntimeException("Nominee not found"));
 
         ExecutiveDirectorVote vote = new ExecutiveDirectorVote();
         vote.setNominee(nominee);
+        vote.setUserIp(userIp);
         vote.setDelegate(delegate);
         vote.setVoteDate(LocalDateTime.now());
         vote.setVoteControl(voteControl);
@@ -65,5 +66,9 @@ public class ExecutiveDirectorVoteService {
     public ExecutiveDirectorVote getVoteByDelegateCi(String ci) {
         return voteRepository.findByDelegate_Ci(ci)
                 .orElseThrow(() -> new NoSuchElementException("Vote not found for delegate with CI: " + ci));
+    }
+
+    public void deleteAllExecutiveDirectorVotes() {
+        voteRepository.deleteAllVotes();
     }
 }

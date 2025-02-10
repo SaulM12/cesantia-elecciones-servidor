@@ -1,20 +1,21 @@
 package com.cesantia.elections.services;
 
-import com.cesantia.elections.entities.Delegate;
-import com.cesantia.elections.entities.Role;
-import com.cesantia.elections.entities.User;
+import com.cesantia.elections.entities.*;
 import com.cesantia.elections.enums.RoleList;
-import com.cesantia.elections.repositories.DelegateRepository;
-import com.cesantia.elections.repositories.InvitationRepository;
-import com.cesantia.elections.repositories.RoleRepository;
+import com.cesantia.elections.repositories.*;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -32,6 +33,11 @@ public class DelegateService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private GradeRepository gradeRepository;
+    @Autowired
+    private DelegateTypeRepository delegateTypeRepository;
 
     // Crear un delegado y su usuario asociado
     public Delegate createDelegateAndUser(Delegate delegate) {
@@ -61,16 +67,11 @@ public class DelegateService {
 
         // Actualizar campos del delegado
         existingDelegate.setNames(updatedDelegate.getNames());
-        existingDelegate.setLastName(updatedDelegate.getLastName());
-        existingDelegate.setSecondLastName(updatedDelegate.getSecondLastName());
         existingDelegate.setPhone(updatedDelegate.getPhone());
-        existingDelegate.setHomePhone(updatedDelegate.getHomePhone());
         existingDelegate.setEmail(updatedDelegate.getEmail());
         existingDelegate.setCandidate(updatedDelegate.getCandidate());
-        existingDelegate.setCompleteInfo(updatedDelegate.getCompleteInfo());
         existingDelegate.setGrade(updatedDelegate.getGrade());
         existingDelegate.setDelegateType(updatedDelegate.getDelegateType());
-        existingDelegate.setUnit(updatedDelegate.getUnit());
 
         // Actualizar el usuario asociado
         User user = userService.findByCi(existingDelegate.getCi())
@@ -121,12 +122,56 @@ public class DelegateService {
     }
 
 
-    public Delegate addImageToDelegate(String ci, byte[] image) {
-        Delegate delegate = delegateRepository.findByCi(ci)
-                .orElseThrow(() -> new EntityNotFoundException("Delegate with CI " + ci + " not found"));
+    public void importDelegatesFromCSV(MultipartFile file) {
+        try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
+            List<String[]> rows = reader.readAll();
+            rows.remove(0); // Eliminar la fila de encabezados
 
-        delegate.setImage(image);
-        return delegateRepository.save(delegate);
+            for (String[] row : rows) {
+                Delegate delegate = new Delegate();
+                delegate.setCi(row[1]);
+                delegate.setNames(row[3]);
+                delegate.setPhone(row[8]);
+                delegate.setIngresoAsis(row[5]);
+                delegate.setDependence(row[12]);
+                delegate.setUnitName(row[7]);
+                delegate.setEmail(row[9]);
+                delegate.setConfirmation(Boolean.parseBoolean(row[11]));
+
+                // Buscar y asignar Grade
+                Optional<Grade> gradeOpt = gradeRepository.findById(Long.parseLong(row[2]));
+                gradeOpt.ifPresent(delegate::setGrade);
+
+                // Buscar y asignar DelegateType
+                Optional<DelegateType> delegateTypeOpt = delegateTypeRepository.findById(Long.parseLong(row[4]));
+                delegateTypeOpt.ifPresent(delegate::setDelegateType);
+
+                // Guardar el delegado
+                delegateRepository.save(delegate);
+
+                // Crear y guardar el usuario asociado
+                createUserForDelegate(delegate);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al procesar el archivo CSV", e);
+        }
     }
+
+    private void createUserForDelegate(Delegate delegate) {
+        if (!userService.existsByCi(delegate.getCi())) { // Evita duplicados
+            Optional<Role> roleOpt = roleRepository.findById(2); // Buscar rol con ID 2
+            if (roleOpt.isPresent()) {
+                User user = new User();
+                user.setCi(delegate.getCi());
+                user.setPassword(passwordEncoder.encode(delegate.getCi())); // Cédula como contraseña encriptada
+                user.setRole(roleOpt.get());
+                userService.save(user);
+            } else {
+                throw new RuntimeException("El rol con ID 2 no existe");
+            }
+        }
+    }
+
 
 }

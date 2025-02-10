@@ -1,7 +1,13 @@
 package com.cesantia.elections.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -24,4 +30,7 @@ public class Quadrant {
     @Column(nullable = false)
     private Integer quadrantOrder;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("quadrants") // Evita la recursión infinita
+    private Set<ElectionType> electionTypes;
 }

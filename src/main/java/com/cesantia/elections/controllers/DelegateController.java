@@ -82,14 +82,10 @@ public class DelegateController {
         }
     }
 
-    @PostMapping("/{ci}/image")
-    public ResponseEntity<ApiMessage> uploadDelegateImage(@PathVariable String ci, @RequestParam("image") MultipartFile file) {
-        try {
-            byte[] imageBytes = file.getBytes();
-            delegateService.addImageToDelegate(ci, imageBytes);
-            return ResponseEntity.ok(new ApiMessage("Image uploaded successfully"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @PostMapping("/import")
+    public ResponseEntity<String> importDelegates(@RequestParam("file") MultipartFile file) {
+        delegateService.importDelegatesFromCSV(file);
+        return ResponseEntity.ok("Archivo CSV procesado correctamente");
     }
+
 }

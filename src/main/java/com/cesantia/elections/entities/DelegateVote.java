@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "delegate_vote",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"delegate_id", "period_id"})})
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"delegate_id", "election_type_id"})})
 @Data
 @Getter
 @Setter
@@ -37,4 +37,11 @@ public class DelegateVote {
 
     @Column(name = "vote_control", nullable = false)
     private String voteControl;
+
+    @Column(name = "user_ip", nullable = false)
+    private String userIp;
+
+    @ManyToOne
+    @JoinColumn(name = "election_type_id", nullable = false)
+    private ElectionType electionType;
 }

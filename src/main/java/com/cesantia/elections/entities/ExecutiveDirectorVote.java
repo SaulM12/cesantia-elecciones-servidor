@@ -30,6 +30,9 @@ public class ExecutiveDirectorVote {
     @JoinColumn(name = "period_id")
     private Period period;
 
+    @Column(name = "user_ip", nullable = false)
+    private String userIp;
+
     @Column(nullable = false)
     private LocalDateTime voteDate;
 

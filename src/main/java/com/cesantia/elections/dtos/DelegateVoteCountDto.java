@@ -12,7 +12,6 @@ public class DelegateVoteCountDto {
     private Long candidateId;
     private String candidateName;
     private Long voteCount;
-    private byte[] image;
 
 }
 

@@ -13,53 +13,33 @@ public class Delegate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column( nullable = false, unique = true, length = 10)
     private String ci;
-
-    @Column(nullable = false, unique = true, length = 10)
+    @Column(nullable = false)
     private String phone;
-
-    @Column(unique = true, length = 10)
-    private String homePhone;
-
+    @Column
+    private String ingresoAsis;
+    @Column
+    private String dependence;
+    @Column
+    private String unitName;
     @Column(nullable = false)
     private String names;
-
-    @Column(nullable = false)
-    private String lastName;
-    @Column(nullable = false)
-    private String secondLastName;
-
     @Column(name = "email")
     private String email;
-
     @Column
-    private Boolean candidate;
-
+    private Boolean candidate = false;
     @Column
-    private Boolean completeInfo;
-
+    private Boolean confirmation;
     @Column
     private Boolean active = true;
-
     @Column
     private Boolean enableToVote = false;
-
     @ManyToOne
     @JoinColumn(name = "grade_id", nullable = false)
     private Grade grade;
-
     @ManyToOne
-    @JoinColumn(name = "delegate_type_id", nullable = false)
+    @JoinColumn(name = "delegate_type_id")
     private DelegateType delegateType;
-
-    @ManyToOne
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
-
-    @Lob
-    @Column()
-    private byte[] image;
 
 }
