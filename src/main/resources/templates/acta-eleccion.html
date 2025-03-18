@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Acta de Elección</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0; /* Eliminar márgenes en toda la página */
+            @top-center {
+                content: element(header);
+            }
+            @bottom-center {
+                content: element(footer);
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header, .footer {
+            position: fixed;
+            width: 100vw; /* Ocupa todo el ancho de la página */
+            left: 0;
+            text-align: center;
+            z-index: 1000; /* Asegura que esté encima del contenido */
+        }
+
+        .header img, .footer img {
+            width: 100%;
+            height: auto;
+        }
+
+        .header {
+            top: 0;
+        }
+
+        .footer {
+            bottom: 0;
+        }
+
+        .content {
+            padding: 0 80px; /* Evitar que el texto toque los bordes */
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 140px;
+
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+             font-size: 12px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+p{
+       font-size: 14px;
+}
+.signatures {
+    width: 80%;
+    margin-top: 80px
+}
+.signatures td {border: 0; border-bottom:0px solid #000}
+.signature {
+    text-align: left;
+    width: 50%;
+}
+
+.signature-2 {
+    text-align: right;
+    width: 50%;
+}
+
+.dots {
+    display: inline-block;
+    width: 100px; /* Ajusta la cantidad de puntos */
+    text-align: left;
+}
+    </style>
+</head>
+<body>
+
+<!-- Header fijo en cada página sin margen -->
+<div class="header" id="header">
+    <img th:src="@{classpath:/static/header.jpg}" alt="Header"/>
+</div>
+
+<!-- Contenido principal -->
+<div class="content">
+    <div th:each="quadrant : ${quadrants}">
+        <div th:each="election : ${quadrant.electionTypes}">
+            <h2 class="title"><span th:text="${election.name}"></span></h2>
+            <h3 class="subtitle">ACTA DE ELECCIÓN DE LOS SEÑORES REPRESENTANTES A LA <span
+                    th:text="${#strings.toUpperCase(election.name)}"></span>
+                DEL SERVICIO DE CESANTÍA DE LA POLICÍA NACIONAL
+
+            </h3>
+            <p>
+                En la ciudad de Quito, a los veinte y ocho días del mes de marzo de 2025, a partir de las…………………..en las
+                instalaciones del Hotel JW Quito (Gran Salón Amazonas) ubicado en la ciudad de Quito, Av. Orellana y
+                Amazonas se instala la Asamblea General Ordinaria de Delegados del Servicio de Cesantía de la Policía
+                Nacional, para elegir a los señores representantes a la <span th:text="${election.name}"></span> del
+                Servicio de Cesantía de la
+                Policía Nacional, por el Cuadro de señores <span th:text="${quadrant.description}"></span>.
+
+            </p>
+            <p></p>
+            <p>
+                Luego de comprobar el quórum reglamentario, se dispone se proceda a dar cumplimiento a lo establecido en
+                los <span th:text="${election.articles}"></span> del Reglamento a la Ley del Servicio de Cesantía.
+            </p>
+            <p></p>
+            <p>Los resultados son los siguientes:</p>
+            <h4>Principal:</h4>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Ord</th>
+                    <th>Grado</th>
+                    <th>Nombre</th>
+                    <th>Cédula</th>
+                    <th># Votos</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Mostrar solo el primer candidato si existe -->
+                <tr th:if="${election.candidates != null and election.candidates.size() > 0}"
+                    th:with="firstCandidate=${election.candidates[0]}">
+                    <td th:text="1"></td>
+                    <td th:text="${firstCandidate.grado}"></td>
+                    <td th:text="${firstCandidate.nombre}"></td>
+                    <td th:text="${firstCandidate.cedula}"></td>
+                    <td th:text="${firstCandidate.votos}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- Segunda tabla para los demás candidatos -->
+            <h4>Suplentes:</h4>
+            <table>
+                <thead>
+                <tr>
+                    <th>Ord</th>
+                    <th>Grado</th>
+                    <th>Nombre</th>
+                    <th>Cédula</th>
+                    <th># Votos</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Mostrar los demás candidatos desde la posición 1 en adelante -->
+                <tr th:each="candidate, stat : ${election.candidates}" th:if="${stat.index > 0}">
+                    <td th:text="${stat.index + 1}"></td>
+                    <td th:text="${candidate.grado}"></td>
+                    <td th:text="${candidate.nombre}"></td>
+                    <td th:text="${candidate.cedula}"></td>
+                    <td th:text="${candidate.votos}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <p>
+                Con lo actuado, finaliza la elección de los representantes por el cuadro de señores <span th:text="${quadrant.description}"></span>.
+                 a la Junta Directiva del Servicio de Cesantía, siendo las ……………firmando para constancia la
+                presente acta el Secretario, que certifica. -
+
+            </p>
+            <table class="signatures" th:if="${election.authorities != null and election.authorities.size() > 1}">
+                <tr>
+                    <!-- Presidente -->
+                    <td class="signature">
+                        <p>f<span class="dots">....................</span></p>
+                        <p><strong>EL PRESIDENTE</strong></p>
+                        <p><span th:text="${election.authorities[0].fullName}"></span></p>
+                        <p><span th:text="${election.authorities[0].ci}"></span></p>
+                        <p><span th:text="${election.authorities[0].phone}"></span></p>
+                    </td>
+
+                    <!-- Secretario -->
+                    <td class="signature-2">
+                        <p>f<span class="dots">..............................</span></p>
+                        <p><strong>EL SECRETARIO</strong></p>
+                        <p><span th:text="${election.authorities[1].fullName}"></span></p>
+                        <p><span th:text="${election.authorities[1].ci}"></span></p>
+                        <p><span th:text="${election.authorities[1].phone}"></span></p>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="page-break"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer fijo en cada página sin margen -->
+<div class="footer" id="footer">
+    <img th:src="@{classpath:/static/footer.jpg}" alt="Footer"/>
+</div>
+
+</body>
+</html>

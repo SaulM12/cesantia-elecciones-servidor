@@ -29,8 +29,8 @@ public class CandidateElectionService {
     @Autowired
     private QuadrantRepository quadrantRepository;
 
-    public CandidateElection assignCandidate(Long delegateId, Long electionTypeId, Long quadrantId) {
-        Delegate delegate = delegateRepository.findById(delegateId)
+    public CandidateElection assignCandidate(Long id, Long electionTypeId, Long quadrantId) {
+        Delegate delegate = delegateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Delegate not found"));
         ElectionType electionType = electionTypeRepository.findById(electionTypeId)
                 .orElseThrow(() -> new RuntimeException("ElectionType not found"));

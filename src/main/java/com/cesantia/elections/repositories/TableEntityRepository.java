@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TableEntityRepository extends JpaRepository<TableEntity,Long> {
-    @Query("SELECT t FROM TableEntity t WHERE t.quadrant.id = :quadrantId ORDER BY t.tableNumber")
+    @Query("SELECT t FROM TableEntity t WHERE t.quadrant.id = :quadrantId ORDER BY t.id")
     List<TableEntity> findByQuadrantId(@Param("quadrantId") Long quadrantId);
 }

@@ -60,7 +60,7 @@ public class InvitationController {
         }
     }
 
-    @PutMapping("/{invitationId}/assign-delegate/{delegateId}")
+    @PutMapping("/{invitationId}/assign-delegate/{delegateCi}")
     public ResponseEntity<ApiMessage> assignDelegateToInvitation(
             @PathVariable Long invitationId,
             @PathVariable Long delegateId

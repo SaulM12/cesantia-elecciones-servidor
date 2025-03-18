@@ -129,6 +129,7 @@ public class DelegateService {
 
             for (String[] row : rows) {
                 Delegate delegate = new Delegate();
+                delegate.setId(Long.valueOf(row[0]));
                 delegate.setCi(row[1]);
                 delegate.setNames(row[3]);
                 delegate.setPhone(row[8]);

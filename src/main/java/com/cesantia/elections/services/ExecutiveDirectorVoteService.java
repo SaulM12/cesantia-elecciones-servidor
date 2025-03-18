@@ -49,15 +49,16 @@ public class ExecutiveDirectorVoteService {
         for (Object[] result : results) {
             Long id = (Long) result[0];          // Extract nominee ID
             String ci = (String) result[1];      // Extract nominee CI
+            String grade = (String) result[3];   // Extract nominee names
             String names = (String) result[2];   // Extract nominee names
-            String electionName = (String) result[3]; // Extract election name
-            Long voteCount = (Long) result[4];   // Extract vote count
+            String electionName = (String) result[4]; // Extract election name
+            Long voteCount = (Long) result[5];   // Extract vote count
 
             byte[] image = nomineeRepository.findById(id)
                     .map(ExecutiveDirectorNominee::getImage)
                     .orElse(null);
 
-            voteCounts.add(new ExecutiveDirectorVoteCountDto(id, ci, names, electionName, voteCount, image));
+            voteCounts.add(new ExecutiveDirectorVoteCountDto(id, ci, grade,names, electionName, voteCount, image));
         }
 
         return voteCounts;

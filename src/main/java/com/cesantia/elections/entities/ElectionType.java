@@ -23,6 +23,9 @@ public class ElectionType {
     @Column
     private String description;
 
+    @Column
+    private String articles;
+
     @Column(nullable = false)
     private Boolean enabled = false; // Indica si la elección está habilitada o no
 

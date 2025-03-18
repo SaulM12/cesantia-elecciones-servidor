@@ -17,8 +17,8 @@ public class TableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "table_number", nullable = false, unique = true)
-    private Integer tableNumber;
+    @Column
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "quadrant_id", nullable = false)

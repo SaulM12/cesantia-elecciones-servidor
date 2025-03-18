@@ -28,12 +28,12 @@ public class QuadrantDto {
     @Data
     public static class TableDto {
         private Long id;
-        private Integer tableNumber;
+        private String name;
         private List<InvitationDto> invitations = new ArrayList<>();
 
-        public TableDto(Long id, Integer tableNumber) {
+        public TableDto(Long id, String name) {
             this.id = id;
-            this.tableNumber = tableNumber;
+            this.name = name;
         }
         // Constructor, getters y setters
     }
@@ -54,7 +54,7 @@ public class QuadrantDto {
         // Constructor, getters y setters
     }
     public QuadrantDto(Long id, String description, String acronym, Integer quadrantOrder,
-                       Long tableId, Integer tableNumber,
+                       Long tableId, String name,
                        Long invitationId, Integer chairNumber, InvitationStatus status, Delegate delegate) {
         this.id = id;
         this.description = description;
@@ -69,7 +69,7 @@ public class QuadrantDto {
                 .filter(t -> t.getId().equals(tableId))
                 .findFirst()
                 .orElseGet(() -> {
-                    TableDto newTable = new TableDto(tableId, tableNumber);
+                    TableDto newTable = new TableDto(tableId, name);
                     this.tables.add(newTable);
                     return newTable;
                 });

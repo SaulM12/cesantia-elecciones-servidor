@@ -59,7 +59,7 @@ public class QuadrantService {
             for (TableEntity table : tables) {
                 QuadrantDto.TableDto tableDto = new QuadrantDto.TableDto(
                         table.getId(),
-                        table.getTableNumber()
+                        table.getName()
                 );
 
                 List<Invitation> invitations = invitationRepository.findByTableEntityId(table.getId());

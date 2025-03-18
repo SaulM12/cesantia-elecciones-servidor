@@ -20,11 +20,8 @@ public class ExecutiveDirectorNominee {
     @Column(nullable = false)
     private String names;
 
-    @Column(nullable = false)
-    private String lastName;
-
-    @Column(nullable = false)
-    private String secondLastName;
+    @Column()
+    private String grade;
 
     @Column(nullable = false)
     private String electionName;

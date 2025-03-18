@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ExecutiveDirectorVoteRepository extends JpaRepository<ExecutiveDirectorVote, Long> {
-    @Query("SELECT n.id, n.ci, n.names, n.electionName, COUNT(v) " +
+    @Query("SELECT n.id, n.ci, n.names, n.grade, n.electionName, COUNT(v) " +
             "FROM ExecutiveDirectorNominee n " +
             "LEFT JOIN ExecutiveDirectorVote v ON v.nominee = n " +
             "GROUP BY n.id, n.ci, n.names, n.electionName")

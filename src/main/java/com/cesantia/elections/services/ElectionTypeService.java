@@ -43,6 +43,7 @@ public class ElectionTypeService {
         existingElectionType.setName(updatedElectionType.getName());
         existingElectionType.setEnabled(updatedElectionType.getEnabled());
         existingElectionType.setDescription(updatedElectionType.getDescription());
+        existingElectionType.setArticles(updatedElectionType.getArticles());
         return electionTypeRepository.save(existingElectionType);
     }
 

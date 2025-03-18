@@ -10,6 +10,7 @@ import lombok.*;
 public class ExecutiveDirectorVoteCountDto {
     private Long id;
     private String nomineeCi;
+    private String grade;
     private String nomineeName;
     private String electionName;
     private Long voteCount;

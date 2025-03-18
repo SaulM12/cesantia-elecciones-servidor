@@ -17,7 +17,7 @@ public class CookieService {
     public void addHttpOnlyCookie(String name, String value, int maxAge, HttpServletResponse response) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
-        cookie.setSecure(false); // Asegúrate de usar HTTPS
+        cookie.setSecure(true); // Asegúrate de usar HTTPS
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
 
@@ -33,7 +33,7 @@ public class CookieService {
     public void deleteCookie(String name, HttpServletResponse response) {
         Cookie cookie = new Cookie(name, null);
         cookie.setHttpOnly(true);
-        cookie.setSecure(false); // Asegúrate de usar HTTPS
+        cookie.setSecure(true); // Asegúrate de usar HTTPS
         cookie.setPath("/");
         cookie.setMaxAge(0);
 

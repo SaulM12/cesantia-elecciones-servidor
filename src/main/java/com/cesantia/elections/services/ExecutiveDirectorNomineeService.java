@@ -27,9 +27,7 @@ public class ExecutiveDirectorNomineeService {
                 .orElseThrow(() -> new RuntimeException("Nominee not found"));
         nominee.setCi(nomineeDetails.getCi());
         nominee.setNames(nomineeDetails.getNames());
-        nominee.setLastName(nomineeDetails.getLastName());
-        nominee.setSecondLastName(nomineeDetails.getSecondLastName());
-        nominee.setElectionName(nomineeDetails.getElectionName());
+        nominee.setGrade(nomineeDetails.getGrade());
         nominee.setPeriod(nomineeDetails.getPeriod());
         return nomineeRepository.save(nominee);
     }
